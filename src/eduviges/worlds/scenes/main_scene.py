@@ -3,11 +3,14 @@ import pygame
 from eduviges.core.scene import Scene
 from eduviges.core.settings import BACKGROUND_COLOR, WINDOW_HEIGHT, WINDOW_WIDTH
 from eduviges.entities.player import Player
+from eduviges.systems.entity_manager import EntityManager
 
 
 class MainScene(Scene):
     def __init__(self) -> None:
+        self.entity_manager = EntityManager()
         self.player = Player()
+        self.entity_manager.add(self.player)
 
     def handle_event(self, event: pygame.event.Event) -> None:
         pass
@@ -35,6 +38,8 @@ class MainScene(Scene):
             screen_height=WINDOW_HEIGHT,
         )
 
+        self.entity_manager.update(delta_time)
+
     def render(self, screen: pygame.Surface) -> None:
         screen.fill(BACKGROUND_COLOR)
-        self.player.render(screen)
+        self.entity_manager.render(screen)

@@ -6,6 +6,7 @@ from eduviges.core.settings import (
     WINDOW_TITLE,
     WINDOW_WIDTH,
 )
+from eduviges.input.input_manager import InputManager
 from eduviges.rendering.renderer import Renderer
 from eduviges.worlds.scenes.main_scene import MainScene
 
@@ -14,18 +15,13 @@ class Engine:
     def __init__(self) -> None:
         pygame.init()
 
-        self.screen = pygame.display.set_mode(
-            (WINDOW_WIDTH, WINDOW_HEIGHT)
-        )
-
+        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption(WINDOW_TITLE)
 
         self.clock = pygame.time.Clock()
-
         self.renderer = Renderer(self.screen)
-
+        self.input_manager = InputManager()
         self.scene = MainScene()
-
         self.running = True
 
     def run(self) -> None:
@@ -36,12 +32,11 @@ class Engine:
                 if event.type == pygame.QUIT:
                     self.running = False
 
+                self.input_manager.handle_event(event)
                 self.scene.handle_event(event)
 
             self.scene.update(delta_time)
-
             self.scene.render(self.screen)
-
             self.renderer.present()
 
         pygame.quit()

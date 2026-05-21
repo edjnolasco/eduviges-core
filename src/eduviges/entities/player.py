@@ -1,7 +1,9 @@
 import pygame
 
+from eduviges.entities.entity import Entity
 
-class Player:
+
+class Player(Entity):
     def __init__(
         self,
         x: int = 100,
@@ -10,7 +12,7 @@ class Player:
         height: int = 32,
         speed: int = 220,
     ) -> None:
-        self.rect = pygame.Rect(x, y, width, height)
+        super().__init__(x, y, width, height)
         self.speed = speed
 
     def move(
@@ -25,6 +27,9 @@ class Player:
         self.rect.y += int(direction_y * self.speed * delta_time)
 
         self.rect.clamp_ip(pygame.Rect(0, 0, screen_width, screen_height))
+
+    def update(self, delta_time: float) -> None:
+        pass
 
     def render(self, screen: pygame.Surface) -> None:
         pygame.draw.rect(screen, (80, 180, 120), self.rect)

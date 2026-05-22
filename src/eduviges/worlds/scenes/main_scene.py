@@ -14,7 +14,7 @@ from eduviges.worlds.tilemaps.tilemap import TileMap
 class MainScene(Scene):
     def __init__(self) -> None:
         self.tilemap = TileMap.from_tiled_json(
-            "test_map.json"
+            "taino_village.json"
         )
 
         self.camera = Camera(
@@ -43,8 +43,8 @@ class MainScene(Scene):
                 "importantes dentro de la "
                 "cosmovisión taína."
             ),
-            x=320,
-            y=192,
+            x=432,
+            y=336,
         )
 
         self.entity_manager.add(self.artifact)

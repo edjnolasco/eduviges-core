@@ -1,7 +1,9 @@
 import pygame
 
 from eduviges.core.scene import Scene
+from eduviges.core.settings import WINDOW_HEIGHT, WINDOW_WIDTH
 from eduviges.entities.player import Player
+from eduviges.rendering.camera import Camera
 from eduviges.systems.entity_manager import EntityManager
 from eduviges.worlds.tilemaps.tilemap import TileMap
 
@@ -10,26 +12,28 @@ class MainScene(Scene):
     def __init__(self) -> None:
         self.tilemap = TileMap(
             data=[
-                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 0, 0, 1, 1, 0, 0, 1, 2],
-                [2, 1, 0, 1, 1, 1, 1, 0, 1, 2],
-                [2, 1, 0, 1, 0, 0, 1, 0, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+                [2, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 2],
+                [2, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 2],
+                [2, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+                [2, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
             ],
             tile_size=64,
         )
 
-        self.entity_manager = EntityManager()
-
-        self.player = Player(
-            x=96,
-            y=96,
-            width=32,
-            height=32,
+        self.camera = Camera(
+            screen_width=WINDOW_WIDTH,
+            screen_height=WINDOW_HEIGHT,
+            world_width=self.tilemap.width,
+            world_height=self.tilemap.height,
         )
 
+        self.entity_manager = EntityManager()
+        self.player = Player(x=96, y=96, width=32, height=32)
         self.entity_manager.add(self.player)
 
     def handle_event(self, event: pygame.event.Event) -> None:
@@ -43,13 +47,10 @@ class MainScene(Scene):
 
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             direction_x -= 1
-
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             direction_x += 1
-
         if keys[pygame.K_UP] or keys[pygame.K_w]:
             direction_y -= 1
-
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
             direction_y += 1
 
@@ -62,8 +63,9 @@ class MainScene(Scene):
             screen_height=self.tilemap.height,
         )
 
+        self.camera.follow(self.player.rect)
         self.entity_manager.update(delta_time)
 
     def render(self, screen: pygame.Surface) -> None:
-        self.tilemap.render(screen)
-        self.entity_manager.render(screen)
+        self.tilemap.render(screen, self.camera)
+        self.entity_manager.render(screen, self.camera)

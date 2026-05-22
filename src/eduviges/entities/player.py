@@ -1,6 +1,7 @@
 import pygame
 
 from eduviges.entities.entity import Entity
+from eduviges.rendering.camera import Camera
 
 
 class Player(Entity):
@@ -24,27 +25,22 @@ class Player(Entity):
         screen_width: int,
         screen_height: int,
     ) -> None:
-        next_x = self.rect.x + int(direction_x * self.speed * delta_time)
-        next_y = self.rect.y + int(direction_y * self.speed * delta_time)
-
         next_rect = self.rect.copy()
-        next_rect.x = next_x
-        next_rect.y = next_y
+        next_rect.x += int(direction_x * self.speed * delta_time)
+        next_rect.y += int(direction_y * self.speed * delta_time)
 
-        collided = any(
-            next_rect.colliderect(rect)
-            for rect in collision_rects
-        )
-
-        if not collided:
+        if not any(next_rect.colliderect(rect) for rect in collision_rects):
             self.rect = next_rect
 
-        self.rect.clamp_ip(
-            pygame.Rect(0, 0, screen_width, screen_height)
-        )
+        self.rect.clamp_ip(pygame.Rect(0, 0, screen_width, screen_height))
 
     def update(self, delta_time: float) -> None:
         pass
 
-    def render(self, screen: pygame.Surface) -> None:
-        pygame.draw.rect(screen, (80, 180, 120), self.rect)
+    def render(
+        self,
+        screen: pygame.Surface,
+        camera: Camera | None = None,
+    ) -> None:
+        rect = camera.apply(self.rect) if camera else self.rect
+        pygame.draw.rect(screen, (80, 180, 120), rect)

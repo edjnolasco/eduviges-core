@@ -1,6 +1,7 @@
 import pygame
 
 from eduviges.entities.entity import Entity
+from eduviges.rendering.camera import Camera
 
 
 class EntityManager:
@@ -18,9 +19,13 @@ class EntityManager:
         for entity in self._entities:
             entity.update(delta_time)
 
-    def render(self, screen: pygame.Surface) -> None:
+    def render(
+        self,
+        screen: pygame.Surface,
+        camera: Camera | None = None,
+    ) -> None:
         for entity in self._entities:
-            entity.render(screen)
+            entity.render(screen, camera)
 
     @property
     def entities(self) -> tuple[Entity, ...]:

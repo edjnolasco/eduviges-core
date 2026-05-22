@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 
 import pygame
 
+from eduviges.rendering.camera import Camera
+
 
 class Entity(ABC):
     def __init__(
@@ -20,5 +22,9 @@ class Entity(ABC):
         pass
 
     @abstractmethod
-    def render(self, screen: pygame.Surface) -> None:
+    def render(
+        self,
+        screen: pygame.Surface,
+        camera: Camera | None = None,
+    ) -> None:
         pass

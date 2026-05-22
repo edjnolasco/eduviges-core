@@ -20,13 +20,28 @@ class Player(Entity):
         direction_x: int,
         direction_y: int,
         delta_time: float,
+        collision_rects: list[pygame.Rect],
         screen_width: int,
         screen_height: int,
     ) -> None:
-        self.rect.x += int(direction_x * self.speed * delta_time)
-        self.rect.y += int(direction_y * self.speed * delta_time)
+        next_x = self.rect.x + int(direction_x * self.speed * delta_time)
+        next_y = self.rect.y + int(direction_y * self.speed * delta_time)
 
-        self.rect.clamp_ip(pygame.Rect(0, 0, screen_width, screen_height))
+        next_rect = self.rect.copy()
+        next_rect.x = next_x
+        next_rect.y = next_y
+
+        collided = any(
+            next_rect.colliderect(rect)
+            for rect in collision_rects
+        )
+
+        if not collided:
+            self.rect = next_rect
+
+        self.rect.clamp_ip(
+            pygame.Rect(0, 0, screen_width, screen_height)
+        )
 
     def update(self, delta_time: float) -> None:
         pass

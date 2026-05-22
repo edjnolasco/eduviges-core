@@ -22,7 +22,14 @@ class MainScene(Scene):
         )
 
         self.entity_manager = EntityManager()
-        self.player = Player(x=96, y=96)
+
+        self.player = Player(
+            x=96,
+            y=96,
+            width=32,
+            height=32,
+        )
+
         self.entity_manager.add(self.player)
 
     def handle_event(self, event: pygame.event.Event) -> None:
@@ -36,10 +43,13 @@ class MainScene(Scene):
 
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             direction_x -= 1
+
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             direction_x += 1
+
         if keys[pygame.K_UP] or keys[pygame.K_w]:
             direction_y -= 1
+
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
             direction_y += 1
 
@@ -47,6 +57,7 @@ class MainScene(Scene):
             direction_x=direction_x,
             direction_y=direction_y,
             delta_time=delta_time,
+            collision_rects=self.tilemap.collision_rects,
             screen_width=self.tilemap.width,
             screen_height=self.tilemap.height,
         )

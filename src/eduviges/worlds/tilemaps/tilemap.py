@@ -55,17 +55,31 @@ class TileMap:
             tile.render(screen)
 
     @property
+    def collision_rects(self) -> list[pygame.Rect]:
+        return [
+            tile.rect
+            for tile in self.tiles
+            if not tile.walkable
+        ]
+
+    @property
     def width(self) -> int:
         if not self.data:
             return 0
+
         return len(self.data[0]) * self.tile_size
 
     @property
     def height(self) -> int:
         return len(self.data) * self.tile_size
 
-    def get_tile_at_grid(self, grid_x: int, grid_y: int) -> Tile | None:
+    def get_tile_at_grid(
+        self,
+        grid_x: int,
+        grid_y: int,
+    ) -> Tile | None:
         for tile in self.tiles:
             if tile.grid_x == grid_x and tile.grid_y == grid_y:
                 return tile
+
         return None

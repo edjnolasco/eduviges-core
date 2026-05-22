@@ -2,6 +2,7 @@ import pygame
 
 from eduviges.core.scene import Scene
 from eduviges.core.settings import WINDOW_HEIGHT, WINDOW_WIDTH
+from eduviges.entities.npc import NPC
 from eduviges.entities.player import Player
 from eduviges.rendering.camera import Camera
 from eduviges.systems.entity_manager import EntityManager
@@ -20,8 +21,16 @@ class MainScene(Scene):
         )
 
         self.entity_manager = EntityManager()
+
         self.player = Player(x=96, y=96, width=32, height=32)
+        self.guide = NPC(
+            name="Amauta",
+            x=320,
+            y=192,
+        )
+
         self.entity_manager.add(self.player)
+        self.entity_manager.add(self.guide)
 
     def handle_event(self, event: pygame.event.Event) -> None:
         pass

@@ -10,20 +10,7 @@ from eduviges.worlds.tilemaps.tilemap import TileMap
 
 class MainScene(Scene):
     def __init__(self) -> None:
-        self.tilemap = TileMap(
-            data=[
-                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 2],
-                [2, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 2],
-                [2, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-            ],
-            tile_size=64,
-        )
+        self.tilemap = TileMap.from_tiled_json("test_map.json")
 
         self.camera = Camera(
             screen_width=WINDOW_WIDTH,

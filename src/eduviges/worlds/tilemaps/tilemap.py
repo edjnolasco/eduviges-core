@@ -1,6 +1,7 @@
 import pygame
 
 from eduviges.rendering.camera import Camera
+from eduviges.worlds.loaders.tiled_loader import TiledLoader
 from eduviges.worlds.tilemaps.tile import Tile
 
 
@@ -13,6 +14,20 @@ class TileMap:
         self.data = data
         self.tile_size = tile_size
         self.tiles: list[Tile] = self._build_tiles(data)
+
+    @classmethod
+    def from_tiled_json(
+        cls,
+        relative_path: str,
+        layer_name: str = "ground",
+    ) -> "TileMap":
+        loader = TiledLoader()
+        data, tile_size = loader.load_tile_layer(
+            relative_path=relative_path,
+            layer_name=layer_name,
+        )
+
+        return cls(data=data, tile_size=tile_size)
 
     def _build_tiles(self, data: list[list[int]]) -> list[Tile]:
         tiles: list[Tile] = []
@@ -44,6 +59,7 @@ class TileMap:
     def width(self) -> int:
         if not self.data:
             return 0
+
         return len(self.data[0]) * self.tile_size
 
     @property
@@ -54,4 +70,5 @@ class TileMap:
         for tile in self.tiles:
             if tile.grid_x == grid_x and tile.grid_y == grid_y:
                 return tile
+
         return None

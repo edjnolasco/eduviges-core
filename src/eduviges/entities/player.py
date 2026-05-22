@@ -1,5 +1,6 @@
 import pygame
 
+from eduviges.assets.asset_loader import AssetLoader
 from eduviges.entities.entity import Entity
 from eduviges.rendering.camera import Camera
 
@@ -14,7 +15,29 @@ class Player(Entity):
         speed: int = 220,
     ) -> None:
         super().__init__(x, y, width, height)
+
         self.speed = speed
+
+        self.asset_loader = AssetLoader()
+
+        self.sprite: pygame.Surface | None = None
+
+        self._load_sprite()
+
+    def _load_sprite(self) -> None:
+        try:
+            self.sprite = self.asset_loader.load_image(
+                name="player",
+                relative_path="sprites/player.png",
+            )
+
+            self.sprite = pygame.transform.scale(
+                self.sprite,
+                (self.rect.width, self.rect.height),
+            )
+
+        except FileNotFoundError:
+            self.sprite = None
 
     def move(
         self,
@@ -26,13 +49,21 @@ class Player(Entity):
         screen_height: int,
     ) -> None:
         next_rect = self.rect.copy()
+
         next_rect.x += int(direction_x * self.speed * delta_time)
         next_rect.y += int(direction_y * self.speed * delta_time)
 
-        if not any(next_rect.colliderect(rect) for rect in collision_rects):
+        collided = any(
+            next_rect.colliderect(rect)
+            for rect in collision_rects
+        )
+
+        if not collided:
             self.rect = next_rect
 
-        self.rect.clamp_ip(pygame.Rect(0, 0, screen_width, screen_height))
+        self.rect.clamp_ip(
+            pygame.Rect(0, 0, screen_width, screen_height)
+        )
 
     def update(self, delta_time: float) -> None:
         pass
@@ -43,4 +74,8 @@ class Player(Entity):
         camera: Camera | None = None,
     ) -> None:
         rect = camera.apply(self.rect) if camera else self.rect
-        pygame.draw.rect(screen, (80, 180, 120), rect)
+
+        if self.sprite:
+            screen.blit(self.sprite, rect)
+        else:
+            pygame.draw.rect(screen, (80, 180, 120), rect)

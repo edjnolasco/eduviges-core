@@ -20,21 +20,32 @@ class AssetLoader:
         path = self.base_path / relative_path
 
         if not path.exists():
-            raise FileNotFoundError(f"Image asset not found: {path}")
+            raise FileNotFoundError(
+                f"Image asset not found: {path}"
+            )
 
         image = pygame.image.load(str(path))
 
-        if convert_alpha:
-            image = image.convert_alpha()
-        else:
-            image = image.convert()
+        display_initialized = pygame.display.get_init()
+        surface_available = pygame.display.get_surface() is not None
+
+        can_convert = display_initialized and surface_available
+
+        if can_convert:
+            if convert_alpha:
+                image = image.convert_alpha()
+            else:
+                image = image.convert()
 
         self._images[name] = image
+
         return image
 
     def get_image(self, name: str) -> pygame.Surface:
         if name not in self._images:
-            raise KeyError(f"Image asset not loaded: {name}")
+            raise KeyError(
+                f"Image asset not loaded: {name}"
+            )
 
         return self._images[name]
 
